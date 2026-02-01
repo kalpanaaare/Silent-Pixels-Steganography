@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Silent Pixels | Encode</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .box {
+            background: white;
+            color: #333;
+            width: 380px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h2 {
+            color: #1e3c72;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        input {
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>🔐 Silent Pixels – Encode</h2>
+
+    <input type="file" id="encodeImage">
+    <input type="text" id="secretMessage" placeholder="Enter secret message">
+
+    <button onclick="encode()">Encode Image</button>
+    <button onclick="downloadEncoded()">Download Encoded Image</button>
+
+    <div id="status"></div>
+
+    <p style="margin-top:15px;">
+        🏠 <a href="home.html">Back to Home</a> |
+        🔓 <a href="decode.html">Go to Decode</a>
+    </p>
+</div>
+
+<script>
+async function encode() {
+    const fd = new FormData();
+    fd.append("image", encodeImage.files[0]);
+    fd.append("message", secretMessage.value);
+
+    await fetch("http://127.0.0.1:5000/encode", {
+        method: "POST",
+        body: fd
+    });
+
+    document.getElementById("status").innerText =
+        "✅ Image encoded successfully!";
+}
+
+async function downloadEncoded() {
+    const res = await fetch("http://127.0.0.1:5000/download");
+    const blob = await res.blob();
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "encoded.png";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
