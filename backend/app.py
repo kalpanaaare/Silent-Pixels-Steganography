@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file 
 from flask_cors import CORS
 
 from steganography import encode_image, decode_image
@@ -18,6 +18,7 @@ CORS(app)
 
 
 # ---------------- HOME ----------------
+
 @app.route("/")
 def home():
     return "Silent Pixels Backend running"
