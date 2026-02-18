@@ -155,10 +155,9 @@ async function sendMessage(text = null) {
 
     const chatBody = document.getElementById("chatBody");
 
-    // USER MESSAGE
     chatBody.innerHTML += `<div class="user">${msg}</div>`;
 
-    const res = await fetch("http://127.0.0.1:5000/chatbot", {
+    const res = await fetch("/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg })
@@ -166,19 +165,16 @@ async function sendMessage(text = null) {
 
     const data = await res.json();
 
-    // BOT MESSAGE
     let botHTML = `<div class="bot">${data.answer.replace(/\n/g, "<br>")}</div>`;
 
-    // IMAGE SUPPORT
     if (data.image) {
         botHTML += `
             <div class="bot">
-                <img src="http://127.0.0.1:5000${data.image}"
+                <img src="${data.image}"
                      style="max-width:100%; border-radius:8px; margin-top:6px;">
             </div>`;
     }
 
-    // QUICK REPLIES FROM BACKEND
     if (data.quick_replies) {
         botHTML += `<div class="bot quick-buttons">`;
         data.quick_replies.forEach(q => {
