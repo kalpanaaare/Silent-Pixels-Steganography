@@ -76,7 +76,7 @@ async function encode() {
     fd.append("image", encodeImage.files[0]);
     fd.append("message", secretMessage.value);
 
-    await fetch("http://127.0.0.1:5000/encode", {
+    await fetch("/encode", {
         method: "POST",
         body: fd
     });
@@ -86,7 +86,7 @@ async function encode() {
 }
 
 async function downloadEncoded() {
-    const res = await fetch("http://127.0.0.1:5000/download");
+    const res = await fetch("/download");
     const blob = await res.blob();
 
     const url = URL.createObjectURL(blob);
@@ -98,5 +98,4 @@ async function downloadEncoded() {
 }
 </script>
 
-</body>
 </html>
