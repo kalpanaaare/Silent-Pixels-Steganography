@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Silent Pixels | Home</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        /* MAIN HOME BOX */
+        .container {
+            text-align: center;
+            max-width: 520px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
+        }
+
+        .title {
+            font-size: 52px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 35px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .encode-btn {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+            color: white;
+        }
+
+        .decode-btn {
+            background: linear-gradient(135deg, #ff5f6d, #ffc371);
+            color: white;
+        }
+
+        /* ================= CHATBOT RECTANGLE ================= */
+
+        #chatbot-rect {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            background: white;
+            color: #222;
+            border-radius: 8px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            font-size: 14px;
+        }
+
+        .chat-header {
+            background: #1e3c72;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .chat-content {
+            display: none;
+        }
+
+        .chat-body {
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .bot {
+            background: #f1f5ff;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            width: fit-content;
+        }
+
+        .user {
+            background: #1e3c72;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            margin-left: auto;
+            width: fit-content;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            outline: none;
+        }
+
+        .chat-input button {
+            padding: 8px 12px;
+            border: none;
+            background: #1e3c72;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HOME CONTENT -->
+<div class="container">
+    <div class="title">SILENT PIXELS</div>
+
+    <div class="subtitle">
+        Securely hide secret messages inside images using steganography.
+        Choose an action below.
+    </div>
+
+    <div class="buttons">
+        <button class="btn encode-btn" onclick="location.href='encode.html'">
+            🔐 Encode Message
+        </button>
+
+        <button class="btn decode-btn" onclick="location.href='decode.html'">
+            🔓 Decode Message
+        </button>
+    </div>
+</div>
+
+<!-- CHATBOT RECTANGLE -->
+<div id="chatbot-rect">
+    <div class="chat-header" onclick="toggleChat()">
+        🤖 Need Help? Chat with Bot
+    </div>
+
+    <div class="chat-content" id="chatContent">
+        <div class="chat-body" id="chatBody">
+            <div class="bot">Hi 👋 I can help you.</div>
+            <div class="bot">Ask about encode, decode, or security.</div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your question..."
+                   onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleChat() {
+    const content = document.getElementById("chatContent");
+    content.style.display =
+        content.style.display === "block" ? "none" : "block";
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const chatBody = document.getElementById("chatBody");
+    chatBody.innerHTML += `<div class="user">${msg}</div>`;
+
+    const res = await fetch("http://127.0.0.1:5000/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json();
+
+    let botHTML = `<div class="bot">${data.answer}</div>`;
+
+    // 🔥 IMAGE SUPPORT
+   if (data.image) {
+    botHTML += `
+        <div class="bot">
+            <img 
+              src="http://127.0.0.1:5000${data.image}"
+              style="max-width:100%; margin-top:8px; border-radius:6px;"
+            >
+        </div>
+    `;
+}
+
+
+    setTimeout(() => {
+        chatBody.innerHTML += botHTML;
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }, 400);
+
+    input.value = "";
+}
+</script>
+
+
+
+</body>
+</html>
