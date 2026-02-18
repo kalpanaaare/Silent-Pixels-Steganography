@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, send_file 
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import CORS
 
 from steganography import encode_image, decode_image
@@ -21,9 +21,7 @@ CORS(app)
 
 @app.route("/")
 def home():
-    return "Silent Pixels Backend running"
-
-
+    return render_template("index.html")
 # ---------------- ENCODE ----------------
 @app.route("/encode", methods=["POST"])
 def encode():
@@ -35,8 +33,7 @@ def encode():
 
     encode_image(input_path, message)
 
-    return jsonify({"status": "encoded"})
-
+    return render_template("encode.html",sucess= "image encoded successfully")
 
 # ---------------- DOWNLOAD ----------------
 @app.route("/download", methods=["GET"])
@@ -58,7 +55,7 @@ def decode():
 
     message = decode_image(decode_path)
 
-    return jsonify({"secret_message": message})
+    return render_template("decode.html",secret_message=message)
 
 
 # ---------------- CHATBOT ----------------
