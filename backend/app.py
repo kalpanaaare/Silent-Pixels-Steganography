@@ -33,7 +33,8 @@ def encode():
 
     encode_image(input_path, message)
 
-    return render_template("encode.html",sucess= "image encoded successfully")
+    return render_template("encode.html", success="Image encoded successfully")
+
 
 # ---------------- DOWNLOAD ----------------
 @app.route("/download", methods=["GET"])
@@ -46,6 +47,8 @@ def download():
 
 
 # ---------------- DECODE ----------------
+from flask import jsonify   # make sure imported at top
+
 @app.route("/decode", methods=["POST"])
 def decode():
     image = request.files["image"]
@@ -55,7 +58,7 @@ def decode():
 
     message = decode_image(decode_path)
 
-    return render_template("decode.html",secret_message=message)
+    return jsonify({"secret_message": message})
 
 
 # ---------------- CHATBOT ----------------
