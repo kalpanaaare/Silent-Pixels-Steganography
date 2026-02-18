@@ -109,7 +109,7 @@
 </div>
 
 <script>
-/* ---------- RESTORE MESSAGE ON PAGE LOAD ---------- */
+    
 window.onload = function () {
     const savedMsg = localStorage.getItem("silentPixelsMsg");
     if (savedMsg) {
@@ -117,7 +117,7 @@ window.onload = function () {
     }
 };
 
-/* ---------- DECODE ---------- */
+
 async function decode() {
     if (!decodeImage.files.length) {
         alert("Please select an encoded image");
@@ -127,7 +127,7 @@ async function decode() {
     const fd = new FormData();
     fd.append("image", decodeImage.files[0]);
 
-    const res = await fetch("http://127.0.0.1:5000/decode", {
+    const res = await fetch("/decode", {
         method: "POST",
         body: fd
     });
@@ -138,16 +138,18 @@ async function decode() {
 
     document.getElementById("result").innerText = msg;
 
-    // 🔥 STORE MESSAGE (LONG TIME)
+
     localStorage.setItem("silentPixelsMsg", msg);
 }
 
-/* ---------- CLEAR MESSAGE ---------- */
+
 function clearMessage() {
     document.getElementById("result").innerText = "";
     localStorage.removeItem("silentPixelsMsg");
 }
 </script>
+
+
 
 </body>
 </html>
